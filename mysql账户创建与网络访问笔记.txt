@@ -1,0 +1,73 @@
+mysql网络连接操作
+
+--查看数据库的用户
+select host,user from mysql.user;
+
+--创建用户
+mysql> create user 'test'@'localhost' identified by 't123456';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> flush privileges;   （刷新MySQL的系统权限相关表，否则会出现拒绝访问）
+Query OK, 0 rows affected (0.06 sec)
+
+--删除用户
+mysql> drop user 'test1'@'%';
+Query OK, 0 rows affected (0.00 sec)
+
+--更换用户名或ip
+mysql> rename user'test'@'localhost'to'test'@'%';
+Query OK, 0 rows affected (0.00 sec)
+
+--查看用户权限
+mysql> show grants for 'test'@'%';
++-----------------------------------------------------------------------------------------------------+
+| Grants for test@%                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'test'@'%' IDENTIFIED BY PASSWORD '*ED2719FC4CD516252DF90F214EF1252A6DC21FF2' |
++-----------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--赋予用户权限
+grant 操作名 on 数据库名.表名 to "用户"@'IP';
+例子：
+mysql> grant select,insert,update on dsc.* to "test"@'%';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show grants for 'test'@'%';
++-----------------------------------------------------------------------------------------------------+
+| Grants for test@%                                                                                   |
++-----------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'test'@'%' IDENTIFIED BY PASSWORD '*ED2719FC4CD516252DF90F214EF1252A6DC21FF2' |
+| GRANT SELECT, INSERT, UPDATE ON `dsc`.* TO 'test'@'%'                                               |
++-----------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+--删除用户权限
+revoke 权限名 on 数据库名.表名 to "用户"@'IP';
+例子：
+mysql> revoke insert on dsc.* from 'test'@"%";
+Query OK, 0 rows affected (0.00 sec)
+
+
+--远程访问数据库
+-在cmd中操作
+C:\WINDOWS\system32>cd D:\Mysql5.5.30\bin
+
+C:\WINDOWS\system32>d:
+
+-访问自己的数据库
+D:\Mysql5.5.30\bin>mysql -u root -p  （-u 与-p 中间输入的是用户名）
+
+-别人远程访问你的数据库
+mysql -h (你电脑的ip) -u （用户名）-p （按回车并输入密码）
+例子：
+D:\Mysql5.5.30\bin>mysql -h 172.17.110.83 -u test -p
+Enter password: *******
+
+-查询自己电脑的ip地址
+“电脑IP地址的查看方式首先在任务栏的网络连接图标右键“打开网络和Internet设置”，
+  然后打开网络和共享中心，
+  最后点击连接的网络，在弹出窗口点击“详细信息”，框内即为电脑IP地址。”
+
+
+
